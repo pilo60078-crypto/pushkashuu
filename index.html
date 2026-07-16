@@ -680,6 +680,12 @@
             font-weight: 700;
             letter-spacing: -0.5px;
             cursor: pointer;
+            user-select: none;
+            transition: transform 0.2s;
+        }
+
+        .card-item .c-amount:active {
+            transform: scale(0.95);
         }
 
         .card-item .c-withdraw {
@@ -700,15 +706,8 @@
             background: rgba(255,255,255,0.25);
         }
 
-        .card-black { background: linear-gradient(135deg, #000 0%, #1a1a1a 100%); }
-        .card-rose { background: linear-gradient(135deg, #ab274f 0%, #7a1a36 100%); }
-        .card-aqua { background: linear-gradient(135deg, #7fffd4 0%, #3fccaa 100%); color: #000; }
-        .card-aqua .c-logo { background: rgba(0,0,0,0.2); color: #000; }
-        .card-aqua .c-delete { background: rgba(0,0,0,0.15); color: #000; }
-        .card-aqua .c-withdraw { background: rgba(0,0,0,0.15); color: #000; }
-        .card-peach { background: linear-gradient(135deg, #cd9575 0%, #a87555 100%); }
-        .card-olive { background: linear-gradient(135deg, #4b5320 0%, #2a3010 100%); }
-        .card-mauve { background: linear-gradient(135deg, #957b8d 0%, #755b6d 100%); }
+        /* Только чёрные карты */
+        .card-black { background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); }
 
         .dots {
             text-align: center;
@@ -1057,7 +1056,6 @@
             letter-spacing: 0.2px;
         }
 
-        /* Дефицит/Профицит */
         .food-deficit {
             background: var(--white);
             border-radius: 12px;
@@ -1977,54 +1975,45 @@
 
     <div class="modal-overlay" id="cardModal">
         <div class="modal">
-            <h3>New Card</h3>
-            <p>Enter name, color and percentage</p>
-            <label>Card Name</label>
-            <input type="text" id="cardNameInput" placeholder="e.g. Apartment, Bank..." maxlength="20">
-            <label>Color</label>
-            <div class="color-grid" id="colorGrid">
-                <div class="color-option selected" style="background:#000000" data-color="black"></div>
-                <div class="color-option" style="background:#ab274f" data-color="rose"></div>
-                <div class="color-option" style="background:#7fffd4" data-color="aqua"></div>
-                <div class="color-option" style="background:#cd9575" data-color="peach"></div>
-                <div class="color-option" style="background:#4b5320" data-color="olive"></div>
-                <div class="color-option" style="background:#957b8d" data-color="mauve"></div>
-            </div>
-            <label>Percentage (%)</label>
+            <h3>Новая карта</h3>
+            <p>Введите название и процент</p>
+            <label>Название карты</label>
+            <input type="text" id="cardNameInput" placeholder="Например: Квартира, Банк..." maxlength="20">
+            <label>Процент (%)</label>
             <div class="percent-input">
                 <input type="number" id="cardPercent" placeholder="0" min="0" max="100" step="1">
                 <span>%</span>
             </div>
-            <p style="font-size:11px;color:var(--gray-light);margin-top:-8px;margin-bottom:12px;">Distribution of income to this card</p>
+            <p style="font-size:11px;color:var(--gray-light);margin-top:-8px;margin-bottom:12px;">Распределение дохода на эту карту</p>
             <div class="modal-actions">
-                <button class="cancel" onclick="closeModal('cardModal')">Cancel</button>
-                <button class="create" onclick="createCard()">Create</button>
+                <button class="cancel" onclick="closeModal('cardModal')">Отмена</button>
+                <button class="create" onclick="createCard()">Создать</button>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="withdrawModal">
         <div class="modal">
-            <h3>Withdraw from Card</h3>
-            <p id="withdrawCardName">Card: </p>
-            <label>Amount</label>
+            <h3>Снять с карты</h3>
+            <p id="withdrawCardName">Карта: </p>
+            <label>Сумма</label>
             <input type="number" id="withdrawAmount" placeholder="0.00" step="0.01" min="0">
             <div class="modal-actions">
-                <button class="cancel" onclick="closeModal('withdrawModal')">Cancel</button>
-                <button class="create" onclick="submitWithdraw()">Withdraw</button>
+                <button class="cancel" onclick="closeModal('withdrawModal')">Отмена</button>
+                <button class="create" onclick="submitWithdraw()">Снять</button>
             </div>
         </div>
     </div>
 
     <div class="modal-overlay" id="rateModal">
         <div class="modal">
-            <h3>Exchange Rate</h3>
-            <p>Set current USD to RUB rate</p>
+            <h3>Курс обмена</h3>
+            <p>Установите текущий курс USD к RUB</p>
             <label>1 USD = </label>
             <input type="number" id="rateInput" placeholder="91.50" step="0.01" min="0">
             <div class="modal-actions">
-                <button class="cancel" onclick="closeModal('rateModal')">Cancel</button>
-                <button class="create" onclick="saveRate()">Save</button>
+                <button class="cancel" onclick="closeModal('rateModal')">Отмена</button>
+                <button class="create" onclick="saveRate()">Сохранить</button>
             </div>
         </div>
     </div>
@@ -2134,11 +2123,11 @@ let state = {
         lunch: false,
         dinner: false,
         snack: false
-    }
+    },
+    cardCurrencies: {}
 };
 
 let currentIndex = 0;
-let selectedColor = 'black';
 let transactionType = 'income';
 let withdrawCardId = null;
 let alertCallback = null;
@@ -2253,6 +2242,7 @@ function loadState() {
                 state.mealCollapsed = { breakfast: false, lunch: false, dinner: false, snack: false };
             }
             if (state.foodDayOffset === undefined) state.foodDayOffset = 0;
+            if (!state.cardCurrencies) state.cardCurrencies = {};
         } else {
             state.cards = [{ id: 1, name: 'Business', color: 'black', percent: 100, balance: 0 }];
             state.nextCardId = 2;
@@ -2268,6 +2258,7 @@ function loadState() {
             state.activity = 0;
             state.mealCollapsed = { breakfast: false, lunch: false, dinner: false, snack: false };
             state.foodDayOffset = 0;
+            state.cardCurrencies = {};
         }
     } catch (e) {
         state.cards = [{ id: 1, name: 'Business', color: 'black', percent: 100, balance: 0 }];
@@ -2284,6 +2275,7 @@ function loadState() {
         state.activity = 0;
         state.mealCollapsed = { breakfast: false, lunch: false, dinner: false, snack: false };
         state.foodDayOffset = 0;
+        state.cardCurrencies = {};
     }
     state.cards.forEach(c => { if (c.balance === undefined) c.balance = 0; });
     saveState();
@@ -2616,8 +2608,11 @@ function renderCards() {
     stack.innerHTML = state.cards.map((card, index) => {
         const pos = index < currentIndex ? 'prev' : index === currentIndex ? 'active' : index === currentIndex + 1 ? 'next' : 'hidden';
         const letter = card.name.charAt(0).toUpperCase() || 'C';
+        const currency = state.cardCurrencies[card.id] || 'RUB';
+        const displayAmount = formatCardAmount(card.balance || 0, currency);
+        
         return `
-            <div class="card-item card-${card.color} ${pos}" data-index="${index}">
+            <div class="card-item card-black ${pos}" data-index="${index}">
                 <div class="c-top">
                     <div class="c-left">
                         <div class="c-logo">${letter}</div>
@@ -2629,7 +2624,7 @@ function renderCards() {
                     <button class="c-delete" onclick="deleteCard(${card.id})">✕</button>
                 </div>
                 <div class="c-bottom">
-                    <div class="c-amount">${formatAmount(card.balance || 0)}</div>
+                    <div class="c-amount" ondblclick="toggleCardCurrency(${card.id})">${displayAmount}</div>
                     <button class="c-withdraw" onclick="openWithdrawModal(${card.id})">−</button>
                 </div>
             </div>
@@ -2639,6 +2634,24 @@ function renderCards() {
     setTimeout(updateCardPositions, 50);
 }
 
+function formatCardAmount(amount, currency) {
+    if (currency === 'USD') {
+        return '$' + (amount / state.rate).toFixed(2);
+    } else {
+        return amount.toFixed(2) + ' ₽';
+    }
+}
+
+function toggleCardCurrency(cardId) {
+    const current = state.cardCurrencies[cardId] || 'RUB';
+    state.cardCurrencies[cardId] = current === 'RUB' ? 'USD' : 'RUB';
+    saveState();
+    renderCards();
+    updateTotalBalance();
+    if (navigator.vibrate) navigator.vibrate(10);
+    showToast('Валюта карты изменена');
+}
+
 function updateCardPositions() {
     document.querySelectorAll('.card-item').forEach((el, i) => {
         el.className = 'card-item';
@@ -2646,7 +2659,7 @@ function updateCardPositions() {
         else if (i === currentIndex) el.classList.add('active');
         else if (i === currentIndex + 1) el.classList.add('next');
         else el.classList.add('hidden');
-        if (state.cards[i]) el.classList.add('card-' + state.cards[i].color);
+        if (state.cards[i]) el.classList.add('card-black');
     });
 }
 
@@ -2680,9 +2693,16 @@ function formatAmount(amount) {
 let totalCurrencyMode = 'RUB';
 
 function updateTotalBalance() {
-    const total = state.cards.reduce((s, c) => s + (c.balance || 0), 0);
+    let total = 0;
+    state.cards.forEach(c => {
+        total += (c.balance || 0);
+    });
     const el = document.getElementById('totalBalance');
-    el.textContent = totalCurrencyMode === 'USD' ? '$' + (total / state.rate).toFixed(2) : total.toFixed(2) + ' ₽';
+    if (totalCurrencyMode === 'USD') {
+        el.textContent = '$' + (total / state.rate).toFixed(2);
+    } else {
+        el.textContent = total.toFixed(2) + ' ₽';
+    }
 }
 
 function toggleTotalCurrency() {
@@ -2815,6 +2835,7 @@ async function deleteCard(id) {
     const result = await confirm('Удалить карту "' + card.name + '"?');
     if (result) {
         state.cards = state.cards.filter(c => c.id !== id);
+        delete state.cardCurrencies[id];
         if (currentIndex >= state.cards.length) currentIndex = state.cards.length - 1;
         saveState();
         renderCards();
@@ -2831,18 +2852,15 @@ async function deleteCard(id) {
 function openCardModal() {
     document.getElementById('cardNameInput').value = '';
     document.getElementById('cardPercent').value = '';
-    selectedColor = 'black';
-    document.querySelectorAll('#colorGrid .color-option').forEach(el => {
-        el.classList.toggle('selected', el.dataset.color === 'black');
-    });
     openModal('cardModal');
 }
 
 function createCard() {
-    const name = document.getElementById('cardNameInput').value.trim() || 'New Card';
+    const name = document.getElementById('cardNameInput').value.trim() || 'Новая карта';
     const percent = parseFloat(document.getElementById('cardPercent').value) || 0;
     if (percent < 0 || percent > 100) { alert('Процент должен быть от 0 до 100'); return; }
-    state.cards.push({ id: state.nextCardId++, name, color: selectedColor, percent, balance: 0 });
+    state.cards.push({ id: state.nextCardId++, name, color: 'black', percent, balance: 0 });
+    state.cardCurrencies[state.nextCardId - 1] = 'RUB';
     currentIndex = state.cards.length - 1;
     saveState();
     renderCards();
@@ -2868,6 +2886,7 @@ function saveRate() {
     document.getElementById('rateValue').textContent = val.toFixed(2);
     saveState();
     closeModal('rateModal');
+    renderCards();
     updateTotalBalance();
     if (navigator.vibrate) navigator.vibrate(10);
     showToast('Курс обновлён');
@@ -2964,11 +2983,9 @@ function renderFoodMeals(date) {
     const key = date.toISOString().split('T')[0];
     const dayData = state.foodData[key] || { breakfast: [], lunch: [], dinner: [], snack: [] };
     
-    // Сохраняем данные для этого дня
     if (!state.foodData[key]) {
         state.foodData[key] = { breakfast: [], lunch: [], dinner: [], snack: [] };
     }
-    // Обновляем данные если они изменились
     Object.keys(dayData).forEach(mealKey => {
         if (!state.foodData[key][mealKey]) {
             state.foodData[key][mealKey] = [];
@@ -3316,19 +3333,6 @@ function setupSwipe() {
 }
 
 // ============================================================
-// COLOR SELECTION
-// ============================================================
-function setupColorSelection() {
-    document.querySelectorAll('#colorGrid .color-option').forEach(el => {
-        el.addEventListener('click', function() {
-            document.querySelectorAll('#colorGrid .color-option').forEach(c => c.classList.remove('selected'));
-            this.classList.add('selected');
-            selectedColor = this.dataset.color;
-        });
-    });
-}
-
-// ============================================================
 // BALANCE CLICK
 // ============================================================
 function setupBalanceClick() {
@@ -3376,7 +3380,6 @@ function init() {
     document.getElementById('rateValue').textContent = state.rate.toFixed(2);
     document.getElementById('rateDisplay').classList.add('hidden');
 
-    const now = new Date();
     currentDate = new Date(2026, 11, 31);
     selectedDate = new Date(2026, 11, 31);
 
@@ -3389,7 +3392,6 @@ function init() {
     renderNotes();
 
     setupSwipe();
-    setupColorSelection();
     setupTabs();
     setupBalanceClick();
 
@@ -3397,6 +3399,7 @@ function init() {
     console.log('📅 Calendar: 31.12.2026');
     console.log('🍽️ Food: FitSpal-style с дефицитом/профицитом');
     console.log('📝 Notes: как на iPhone');
+    console.log('💳 Карты: только чёрные, смена валюты по двойному клику');
     console.log('✅ Все уведомления — кастомные');
 }
 
