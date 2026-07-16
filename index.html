@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
@@ -45,6 +45,7 @@
             --radius: 20px;
             --blue: #1767d5;
             --orange: #e67e22;
+            --gold: #f1c40f;
         }
 
         body {
@@ -142,17 +143,31 @@
             display: flex;
         }
 
-        /* ===== CALENDAR ===== */
-        .calendar-wrap {
+        /* ===== CALENDAR WRAPPER ===== */
+        .calendar-wrapper {
             padding: 4px 16px 8px;
+            cursor: pointer;
+            user-select: none;
+            -webkit-user-select: none;
         }
 
+        .calendar-wrapper .calendar-click-area {
+            position: relative;
+        }
+
+        /* ===== CALENDAR CARD ===== */
         .calendar-card {
             background: var(--white);
             border-radius: 14px;
             padding: 8px 10px 6px;
             border: 1px solid var(--bg-light);
             box-shadow: 0 1px 6px rgba(0,0,0,0.03);
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            overflow: hidden;
+        }
+
+        .calendar-card.expanded {
+            padding-bottom: 16px;
         }
 
         .calendar-header {
@@ -263,14 +278,90 @@
             background: var(--black);
         }
 
-        .calendar-date-label {
-            font-family: var(--font-secondary);
-            font-size: 11px;
-            font-weight: 500;
+        .calendar-day.has-task .day-score {
+            display: none;
+        }
+
+        .calendar-day .day-score {
+            font-size: 6px;
+            color: var(--gray-light);
+            position: absolute;
+            bottom: 1px;
+            font-weight: 700;
+        }
+
+        .calendar-day.today .day-score {
             color: var(--gray);
-            margin: 4px 0 3px 2px;
-            padding: 3px 0;
-            border-bottom: 1px solid var(--bg-light);
+        }
+
+        /* ===== СТАТИСТИКА (выезжающая) ===== */
+        .stats-container {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            margin-top: 0;
+            visibility: hidden;
+        }
+
+        .stats-container.open {
+            max-height: 200px;
+            opacity: 1;
+            margin-top: 10px;
+            visibility: visible;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 6px;
+            padding: 4px 0;
+        }
+
+        .stats-grid .stat-item {
+            background: var(--bg-light);
+            border-radius: 10px;
+            padding: 8px 4px;
+            text-align: center;
+        }
+
+        .stats-grid .stat-item .stat-number {
+            font-family: var(--font-primary);
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--black);
+            line-height: 1.2;
+        }
+
+        .stats-grid .stat-item .stat-label {
+            font-family: var(--font-secondary);
+            font-size: 9px;
+            color: var(--gray);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+            margin-top: 1px;
+        }
+
+        .stats-grid .stat-item .stat-number.gold {
+            color: var(--gold);
+        }
+
+        .stats-grid .stat-item .stat-number.green {
+            color: var(--green);
+        }
+
+        .stats-grid .stat-item .stat-number.blue {
+            color: var(--blue);
+        }
+
+        .stats-hint {
+            font-family: var(--font-secondary);
+            font-size: 9px;
+            color: var(--gray-light);
+            text-align: center;
+            padding: 4px 0 0;
+            opacity: 0.6;
+            letter-spacing: 0.2px;
         }
 
         /* ===== DAILY LOG ===== */
@@ -1861,16 +1952,38 @@
 
         <!-- ===== CALENDAR ===== -->
         <div class="tab-content active" id="tabCalendar">
-            <div class="calendar-wrap">
-                <div class="calendar-card">
-                    <div class="calendar-header">
-                        <span class="calendar-month" id="calendarMonth"></span>
-                        <div class="calendar-nav">
-                            <button onclick="changeMonth(-1)">‹</button>
-                            <button onclick="changeMonth(1)">›</button>
+            <div class="calendar-wrapper" id="calendarWrapper">
+                <div class="calendar-click-area" id="calendarClickArea">
+                    <!-- Календарь -->
+                    <div class="calendar-card" id="calendarCard">
+                        <div class="calendar-header">
+                            <span class="calendar-month" id="calendarMonth"></span>
+                            <div class="calendar-nav" onclick="event.stopPropagation();">
+                                <button onclick="changeMonth(-1)">‹</button>
+                                <button onclick="changeMonth(1)">›</button>
+                            </div>
+                        </div>
+                        <div class="calendar-grid" id="calendarGrid"></div>
+
+                        <!-- Статистика (выезжающая) -->
+                        <div class="stats-container" id="statsContainer">
+                            <div class="stats-grid" id="statsGrid">
+                                <div class="stat-item">
+                                    <div class="stat-number gold" id="totalScore">0</div>
+                                    <div class="stat-label">Всего баллов</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number green" id="strongDays">0</div>
+                                    <div class="stat-label">Сильных дней (8-10)</div>
+                                </div>
+                                <div class="stat-item">
+                                    <div class="stat-number blue" id="avgScore">0</div>
+                                    <div class="stat-label">Средний балл</div>
+                                </div>
+                            </div>
+                            <div class="stats-hint">Эффективность за все дни</div>
                         </div>
                     </div>
-                    <div class="calendar-grid" id="calendarGrid"></div>
                 </div>
                 <div class="daily-log" id="dailyLog"></div>
             </div>
@@ -2191,7 +2304,8 @@ let state = {
         dinner: false,
         snack: false
     },
-    cardCurrencies: {}
+    cardCurrencies: {},
+    statsExpanded: false
 };
 
 let currentIndex = 0;
@@ -2203,6 +2317,8 @@ let promptCallback = null;
 let currentDate = new Date();
 let selectedDate = new Date();
 let editingNoteId = null;
+let clickCount = 0;
+let clickTimer = null;
 
 // ============================================================
 // TOAST
@@ -2311,6 +2427,7 @@ function loadState() {
             }
             if (state.foodDayOffset === undefined) state.foodDayOffset = 0;
             if (!state.cardCurrencies) state.cardCurrencies = {};
+            if (state.statsExpanded === undefined) state.statsExpanded = false;
         } else {
             state.cards = [{ id: 1, name: 'Business', color: 'black', percent: 100, balance: 0 }];
             state.nextCardId = 2;
@@ -2327,6 +2444,7 @@ function loadState() {
             state.mealCollapsed = { breakfast: false, lunch: false, dinner: false, snack: false };
             state.foodDayOffset = 0;
             state.cardCurrencies = {};
+            state.statsExpanded = false;
         }
     } catch (e) {
         state.cards = [{ id: 1, name: 'Business', color: 'black', percent: 100, balance: 0 }];
@@ -2344,6 +2462,7 @@ function loadState() {
         state.mealCollapsed = { breakfast: false, lunch: false, dinner: false, snack: false };
         state.foodDayOffset = 0;
         state.cardCurrencies = {};
+        state.statsExpanded = false;
     }
     state.cards.forEach(c => { if (c.balance === undefined) c.balance = 0; });
     saveState();
@@ -2401,7 +2520,10 @@ function setupTabs() {
             } else {
                 rate.classList.add('hidden');
             }
-            if (name === 'calendar') renderCalendar();
+            if (name === 'calendar') {
+                renderCalendar();
+                updateStats();
+            }
             if (name === 'food') renderFood();
             if (name === 'notes') renderNotes();
             if (navigator.vibrate) navigator.vibrate(8);
@@ -2421,6 +2543,14 @@ function getDateKey(day, month, year) {
     if (m < 0) { m = 12 + m; y = year - 1; }
     if (m > 11) { m = m - 12; y = year + 1; }
     return `${y}-${String(m + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+}
+
+function getDayScore(dayData) {
+    if (!dayData) return 0;
+    const tasks = dayData.tasks || [];
+    const completed = tasks.filter(t => t.done).length;
+    const focusScore = dayData.focusScore || 0;
+    return Math.min(completed, 5) + focusScore;
 }
 
 function hasTask(day, month, year) {
@@ -2505,6 +2635,30 @@ function renderCalendar() {
 
     document.getElementById('calendarGrid').innerHTML = html;
     renderDailyLog(selectedDate);
+    updateStats();
+}
+
+function updateStats() {
+    const allKeys = Object.keys(state.calendarData);
+    let totalScore = 0;
+    let strongDays = 0;
+    let daysCount = 0;
+
+    allKeys.forEach(key => {
+        const data = state.calendarData[key];
+        const score = getDayScore(data);
+        totalScore += score;
+        daysCount++;
+        if (score >= 8 && score <= 10) {
+            strongDays++;
+        }
+    });
+
+    const avgScore = daysCount > 0 ? (totalScore / daysCount) : 0;
+
+    document.getElementById('totalScore').textContent = totalScore;
+    document.getElementById('strongDays').textContent = strongDays;
+    document.getElementById('avgScore').textContent = avgScore.toFixed(1);
 }
 
 function changeMonth(delta) {
@@ -2519,6 +2673,52 @@ function selectDate(day, month, year) {
     if (m > 11) { m = m - 12; y = year + 1; }
     selectedDate = new Date(y, m, day);
     renderCalendar();
+}
+
+// ============================================================
+// ДВОЙНОЙ КЛИК ПО КАЛЕНДАРЮ
+// ============================================================
+function setupCalendarDoubleClick() {
+    const area = document.getElementById('calendarClickArea');
+    
+    area.addEventListener('click', function(e) {
+        // Не реагируем на клики по кнопкам навигации
+        if (e.target.closest('.calendar-nav')) return;
+        
+        clickCount++;
+        
+        if (clickCount === 1) {
+            clickTimer = setTimeout(() => {
+                clickCount = 0;
+            }, 300);
+        } else if (clickCount >= 2) {
+            clearTimeout(clickTimer);
+            clickCount = 0;
+            toggleStats();
+        }
+    });
+}
+
+function toggleStats() {
+    const container = document.getElementById('statsContainer');
+    const card = document.getElementById('calendarCard');
+    
+    state.statsExpanded = !state.statsExpanded;
+    
+    if (state.statsExpanded) {
+        container.classList.add('open');
+        card.classList.add('expanded');
+        updateStats();
+        if (navigator.vibrate) navigator.vibrate(15);
+        showToast('Статистика показана');
+    } else {
+        container.classList.remove('open');
+        card.classList.remove('expanded');
+        if (navigator.vibrate) navigator.vibrate(10);
+        showToast('Статистика скрыта');
+    }
+    
+    saveState();
 }
 
 // ============================================================
@@ -2592,6 +2792,7 @@ function toggleRoutine(idx) {
     state.calendarData[key] = data;
     saveState();
     renderDailyLog(selectedDate);
+    updateStats();
     if (navigator.vibrate) navigator.vibrate(8);
 }
 
@@ -2614,6 +2815,7 @@ function setFocus(score) {
     state.calendarData[key] = data;
     saveState();
     renderDailyLog(selectedDate);
+    updateStats();
     if (navigator.vibrate) navigator.vibrate(8);
 }
 
@@ -2625,6 +2827,7 @@ function toggleTask(idx) {
         state.calendarData[key] = data;
         saveState();
         renderDailyLog(selectedDate);
+        updateStats();
         if (navigator.vibrate) navigator.vibrate(8);
     }
 }
@@ -2646,6 +2849,7 @@ function deleteTask(idx) {
     state.calendarData[key] = data;
     saveState();
     renderDailyLog(selectedDate);
+    updateStats();
     if (navigator.vibrate) navigator.vibrate(8);
 }
 
@@ -2660,6 +2864,7 @@ function addTask() {
     state.calendarData[key] = data;
     saveState();
     renderDailyLog(selectedDate);
+    updateStats();
     if (navigator.vibrate) navigator.vibrate(8);
 }
 
@@ -3491,12 +3696,21 @@ function init() {
     setupColorSelection();
     setupTabs();
     setupBalanceClick();
+    setupCalendarDoubleClick();
+
+    // Восстанавливаем состояние статистики
+    if (state.statsExpanded) {
+        document.getElementById('statsContainer').classList.add('open');
+        document.getElementById('calendarCard').classList.add('expanded');
+        updateStats();
+    }
 
     console.log('💰 PS - Personal Finance Manager');
     console.log('📅 Calendar: ' + selectedDate.toLocaleDateString('ru-RU'));
     console.log('🍽️ Food: FitSpal-style с дефицитом/профицитом');
     console.log('📝 Notes: как на iPhone');
     console.log('💳 Карты: 6 цветов, смена валюты по двойному клику');
+    console.log('📊 Статистика: двойной клик по календарю');
     console.log('✅ Все уведомления — кастомные');
 }
 
