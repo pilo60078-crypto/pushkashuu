@@ -706,8 +706,16 @@
             background: rgba(255,255,255,0.25);
         }
 
-        /* Только чёрные карты */
+        /* ===== ЦВЕТА КАРТ ===== */
         .card-black { background: linear-gradient(135deg, #000000 0%, #1a1a1a 100%); }
+        .card-rose { background: linear-gradient(135deg, #ab274f 0%, #7a1a36 100%); }
+        .card-aqua { background: linear-gradient(135deg, #7fffd4 0%, #3fccaa 100%); color: #000000; }
+        .card-aqua .c-logo { background: rgba(0,0,0,0.2); color: #000; }
+        .card-aqua .c-delete { background: rgba(0,0,0,0.15); color: #000; }
+        .card-aqua .c-withdraw { background: rgba(0,0,0,0.15); color: #000; }
+        .card-peach { background: linear-gradient(135deg, #cd9575 0%, #a87555 100%); }
+        .card-olive { background: linear-gradient(135deg, #4b5320 0%, #2a3010 100%); }
+        .card-mauve { background: linear-gradient(135deg, #957b8d 0%, #755b6d 100%); }
 
         .dots {
             text-align: center;
@@ -1976,15 +1984,28 @@
     <div class="modal-overlay" id="cardModal">
         <div class="modal">
             <h3>Новая карта</h3>
-            <p>Введите название и процент</p>
+            <p>Введите название, выберите цвет и процент</p>
+            
             <label>Название карты</label>
             <input type="text" id="cardNameInput" placeholder="Например: Квартира, Банк..." maxlength="20">
+            
+            <label>Цвет карты</label>
+            <div class="color-grid" id="colorGrid">
+                <div class="color-option selected" style="background:#000000" data-color="black"></div>
+                <div class="color-option" style="background:#ab274f" data-color="rose"></div>
+                <div class="color-option" style="background:#7fffd4" data-color="aqua"></div>
+                <div class="color-option" style="background:#cd9575" data-color="peach"></div>
+                <div class="color-option" style="background:#4b5320" data-color="olive"></div>
+                <div class="color-option" style="background:#957b8d" data-color="mauve"></div>
+            </div>
+            
             <label>Процент (%)</label>
             <div class="percent-input">
                 <input type="number" id="cardPercent" placeholder="0" min="0" max="100" step="1">
                 <span>%</span>
             </div>
             <p style="font-size:11px;color:var(--gray-light);margin-top:-8px;margin-bottom:12px;">Распределение дохода на эту карту</p>
+            
             <div class="modal-actions">
                 <button class="cancel" onclick="closeModal('cardModal')">Отмена</button>
                 <button class="create" onclick="createCard()">Создать</button>
@@ -2128,6 +2149,7 @@ let state = {
 };
 
 let currentIndex = 0;
+let selectedColor = 'black';
 let transactionType = 'income';
 let withdrawCardId = null;
 let alertCallback = null;
@@ -2612,7 +2634,7 @@ function renderCards() {
         const displayAmount = formatCardAmount(card.balance || 0, currency);
         
         return `
-            <div class="card-item card-black ${pos}" data-index="${index}">
+            <div class="card-item card-${card.color} ${pos}" data-index="${index}">
                 <div class="c-top">
                     <div class="c-left">
                         <div class="c-logo">${letter}</div>
@@ -2659,7 +2681,9 @@ function updateCardPositions() {
         else if (i === currentIndex) el.classList.add('active');
         else if (i === currentIndex + 1) el.classList.add('next');
         else el.classList.add('hidden');
-        if (state.cards[i]) el.classList.add('card-black');
+        if (state.cards[i]) {
+            el.classList.add('card-' + state.cards[i].color);
+        }
     });
 }
 
@@ -2852,6 +2876,10 @@ async function deleteCard(id) {
 function openCardModal() {
     document.getElementById('cardNameInput').value = '';
     document.getElementById('cardPercent').value = '';
+    selectedColor = 'black';
+    document.querySelectorAll('#colorGrid .color-option').forEach(el => {
+        el.classList.toggle('selected', el.dataset.color === 'black');
+    });
     openModal('cardModal');
 }
 
@@ -2859,7 +2887,15 @@ function createCard() {
     const name = document.getElementById('cardNameInput').value.trim() || 'Новая карта';
     const percent = parseFloat(document.getElementById('cardPercent').value) || 0;
     if (percent < 0 || percent > 100) { alert('Процент должен быть от 0 до 100'); return; }
-    state.cards.push({ id: state.nextCardId++, name, color: 'black', percent, balance: 0 });
+    
+    state.cards.push({ 
+        id: state.nextCardId++, 
+        name, 
+        color: selectedColor,
+        percent, 
+        balance: 0 
+    });
+    
     state.cardCurrencies[state.nextCardId - 1] = 'RUB';
     currentIndex = state.cards.length - 1;
     saveState();
@@ -2869,6 +2905,16 @@ function createCard() {
     closeModal('cardModal');
     if (navigator.vibrate) navigator.vibrate(10);
     showToast('Карта создана');
+}
+
+function setupColorSelection() {
+    document.querySelectorAll('#colorGrid .color-option').forEach(el => {
+        el.addEventListener('click', function() {
+            document.querySelectorAll('#colorGrid .color-option').forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+            selectedColor = this.dataset.color;
+        });
+    });
 }
 
 // ============================================================
@@ -3392,6 +3438,7 @@ function init() {
     renderNotes();
 
     setupSwipe();
+    setupColorSelection();
     setupTabs();
     setupBalanceClick();
 
@@ -3399,7 +3446,7 @@ function init() {
     console.log('📅 Calendar: 31.12.2026');
     console.log('🍽️ Food: FitSpal-style с дефицитом/профицитом');
     console.log('📝 Notes: как на iPhone');
-    console.log('💳 Карты: только чёрные, смена валюты по двойному клику');
+    console.log('💳 Карты: 6 цветов, смена валюты по двойному клику');
     console.log('✅ Все уведомления — кастомные');
 }
 
