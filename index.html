@@ -1,3 +1,6 @@
+Вот полный исправленный код с текущей датой вместо 31.12.2026:
+
+```html
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -1864,7 +1867,7 @@
             <div class="calendar-wrap">
                 <div class="calendar-card">
                     <div class="calendar-header">
-                        <span class="calendar-month" id="calendarMonth">Декабрь 2026</span>
+                        <span class="calendar-month" id="calendarMonth"></span>
                         <div class="calendar-nav">
                             <button onclick="changeMonth(-1)">‹</button>
                             <button onclick="changeMonth(1)">›</button>
@@ -1919,7 +1922,7 @@
             <div class="food-wrap">
                 <div class="food-date-nav">
                     <button class="fdn-btn" onclick="changeFoodDay(-1)">‹</button>
-                    <span class="fdn-date" id="foodDateLabel">31.12.2026</span>
+                    <span class="fdn-date" id="foodDateLabel"></span>
                     <button class="fdn-btn" onclick="changeFoodDay(1)">›</button>
                     <button class="fdn-today" onclick="goToToday()">Сегодня</button>
                 </div>
@@ -2200,8 +2203,8 @@ let transactionType = 'income';
 let withdrawCardId = null;
 let alertCallback = null;
 let promptCallback = null;
-let currentDate = new Date(2026, 11, 31);
-let selectedDate = new Date(2026, 11, 31);
+let currentDate = new Date();
+let selectedDate = new Date();
 let editingNoteId = null;
 
 // ============================================================
@@ -3472,8 +3475,12 @@ function init() {
     document.getElementById('rateValue').textContent = state.rate.toFixed(2);
     document.getElementById('rateDisplay').classList.add('hidden');
 
-    currentDate = new Date(2026, 11, 31);
-    selectedDate = new Date(2026, 11, 31);
+    // ===== ТЕКУЩАЯ ДАТА =====
+    const now = new Date();
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    
+    currentDate = new Date(now.getFullYear(), now.getMonth(), 1);
+    selectedDate = today;
 
     renderCards();
     updateDots();
@@ -3489,7 +3496,7 @@ function init() {
     setupBalanceClick();
 
     console.log('💰 PS - Personal Finance Manager');
-    console.log('📅 Calendar: 31.12.2026');
+    console.log('📅 Calendar: ' + selectedDate.toLocaleDateString('ru-RU'));
     console.log('🍽️ Food: FitSpal-style с дефицитом/профицитом');
     console.log('📝 Notes: как на iPhone');
     console.log('💳 Карты: 6 цветов, смена валюты по двойному клику');
@@ -3501,3 +3508,4 @@ document.addEventListener('DOMContentLoaded', init);
 
 </body>
 </html>
+```
