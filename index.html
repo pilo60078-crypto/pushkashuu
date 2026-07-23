@@ -46,30 +46,73 @@
             --blue: #1767d5;
             --orange: #e67e22;
             --gold: #f1c40f;
+            --card-bg: #ffffff;
+            --card-border: #f0f0f2;
+            --text-primary: #000000;
+            --text-secondary: #6e6e73;
+            --text-muted: #b2b2b2;
+            --bg-primary: #f5f5f5;
+            --bg-secondary: #ededed;
+            --modal-bg: #ffffff;
+            --input-bg: #ededed;
+            --input-border: #ededed;
+            --tab-border: #f0f0f2;
+            --shadow-color: rgba(0,0,0,0.12);
+        }
+
+        [data-theme="dark"] {
+            --black: #ffffff;
+            --gray-dark: #e0e0e0;
+            --gray: #a0a0a8;
+            --gray-light: #707075;
+            --bg-light: #2a2a2e;
+            --white: #1c1c1e;
+            --bg: #121214;
+            --selected: #3a3a3e;
+            --today: #2a2a2e;
+            --shadow: 0 12px 32px rgba(0,0,0,0.4);
+            --blue: #4a8ad6;
+            --green: #4a9a5a;
+            --red: #d44a4a;
+            --gold: #f1c40f;
+            --card-bg: #1c1c1e;
+            --card-border: #2a2a2e;
+            --text-primary: #ffffff;
+            --text-secondary: #a0a0a8;
+            --text-muted: #707075;
+            --bg-primary: #121214;
+            --bg-secondary: #2a2a2e;
+            --modal-bg: #1c1c1e;
+            --input-bg: #2a2a2e;
+            --input-border: #3a3a3e;
+            --tab-border: #2a2a2e;
+            --shadow-color: rgba(0,0,0,0.6);
         }
 
         body {
             background: var(--bg);
             font-family: var(--font-primary);
-            color: var(--black);
+            color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
             overflow: hidden;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .phone {
             width: 374px;
             height: 812px;
-            background: var(--white);
+            background: var(--card-bg);
             border-radius: 40px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.08);
+            box-shadow: 0 20px 60px var(--shadow-color);
             display: flex;
             flex-direction: column;
             overflow: hidden;
             position: relative;
+            transition: background 0.3s ease, box-shadow 0.3s ease;
         }
 
         .top {
@@ -78,8 +121,15 @@
             justify-content: space-between;
             align-items: center;
             flex-shrink: 0;
-            background: var(--white);
+            background: var(--card-bg);
             z-index: 10;
+            transition: background 0.3s ease;
+        }
+
+        .top-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .profile {
@@ -96,16 +146,44 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--white);
             font-size: 18px;
             font-weight: 700;
             flex-shrink: 0;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .avatar:active {
+            transform: scale(0.92);
         }
 
         .name {
             font-size: 18px;
             font-weight: 600;
             letter-spacing: -0.3px;
+            color: var(--text-primary);
+        }
+
+        .theme-toggle {
+            background: none;
+            border: none;
+            font-size: 18px;
+            color: var(--gray);
+            cursor: pointer;
+            padding: 0;
+            transition: all 0.2s;
+            font-family: var(--font-primary);
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .theme-toggle:active {
+            transform: scale(0.92);
         }
 
         .rate {
@@ -116,6 +194,7 @@
             border-radius: 12px;
             cursor: pointer;
             font-family: var(--font-secondary);
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .rate.hidden {
@@ -157,12 +236,12 @@
 
         /* ===== CALENDAR CARD ===== */
         .calendar-card {
-            background: var(--white);
+            background: var(--card-bg);
             border-radius: 14px;
             padding: 8px 10px 6px;
-            border: 1px solid var(--bg-light);
-            box-shadow: 0 1px 6px rgba(0,0,0,0.03);
-            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 1px 6px var(--shadow-color);
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94), background 0.3s ease, border-color 0.3s ease;
             overflow: hidden;
         }
 
@@ -181,6 +260,7 @@
         .calendar-month {
             font-size: 13px;
             font-weight: 700;
+            color: var(--text-primary);
         }
 
         .calendar-nav {
@@ -232,7 +312,7 @@
             border-radius: 50%;
             cursor: pointer;
             transition: all 0.2s;
-            color: var(--black);
+            color: var(--text-primary);
             min-height: 28px;
             display: flex;
             align-items: center;
@@ -264,36 +344,6 @@
             font-weight: 700;
         }
 
-        .calendar-day.has-task {
-            position: relative;
-        }
-
-        .calendar-day.has-task::after {
-            content: '';
-            position: absolute;
-            bottom: 2px;
-            width: 4px;
-            height: 4px;
-            border-radius: 50%;
-            background: var(--black);
-        }
-
-        .calendar-day.has-task .day-score {
-            display: none;
-        }
-
-        .calendar-day .day-score {
-            font-size: 6px;
-            color: var(--gray-light);
-            position: absolute;
-            bottom: 1px;
-            font-weight: 700;
-        }
-
-        .calendar-day.today .day-score {
-            color: var(--gray);
-        }
-
         /* ===== СТАТИСТИКА (выезжающая) ===== */
         .stats-container {
             max-height: 0;
@@ -323,13 +373,14 @@
             border-radius: 10px;
             padding: 8px 4px;
             text-align: center;
+            transition: background 0.3s ease;
         }
 
         .stats-grid .stat-item .stat-number {
             font-family: var(--font-primary);
             font-size: 18px;
             font-weight: 800;
-            color: var(--black);
+            color: var(--text-primary);
             line-height: 1.2;
         }
 
@@ -370,19 +421,20 @@
         }
 
         .log-card {
-            background: var(--white);
+            background: var(--card-bg);
             border-radius: 12px;
             padding: 8px 12px;
             margin-bottom: 6px;
-            border: 1px solid var(--bg-light);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 1px 4px var(--shadow-color);
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .log-card .card-label {
             font-family: var(--font-primary);
             font-size: 12px;
             font-weight: 700;
-            color: var(--black);
+            color: var(--text-primary);
             margin-bottom: 4px;
         }
 
@@ -391,7 +443,7 @@
             align-items: center;
             gap: 8px;
             padding: 3px 0;
-            border-bottom: 1px solid rgba(0,0,0,0.03);
+            border-bottom: 1px solid rgba(128,128,128,0.08);
         }
 
         .routine-item:last-child {
@@ -416,7 +468,7 @@
         .routine-item .r-check.done {
             background: var(--black);
             border-color: var(--black);
-            color: white;
+            color: var(--white);
         }
 
         .routine-item .r-check:active {
@@ -427,7 +479,7 @@
             font-family: var(--font-secondary);
             font-size: 12px;
             font-weight: 500;
-            color: var(--black);
+            color: var(--text-primary);
             cursor: pointer;
             flex: 1;
             padding: 1px 4px;
@@ -462,7 +514,7 @@
             padding: 4px;
             border: 2px solid var(--bg-light);
             border-radius: 6px;
-            background: var(--white);
+            background: var(--card-bg);
             font-family: var(--font-primary);
             font-size: 12px;
             font-weight: 600;
@@ -477,7 +529,7 @@
 
         .focus-btn.active {
             border-color: var(--black);
-            color: var(--black);
+            color: var(--text-primary);
             background: var(--bg-light);
         }
 
@@ -499,7 +551,7 @@
             font-family: var(--font-primary);
             font-size: 12px;
             font-weight: 700;
-            color: var(--black);
+            color: var(--text-primary);
         }
 
         .task-item {
@@ -507,7 +559,7 @@
             align-items: center;
             gap: 8px;
             padding: 3px 0;
-            border-bottom: 1px solid rgba(0,0,0,0.03);
+            border-bottom: 1px solid rgba(128,128,128,0.08);
         }
 
         .task-item:last-child {
@@ -532,7 +584,7 @@
         .task-item .t-check.done {
             background: var(--black);
             border-color: var(--black);
-            color: white;
+            color: var(--white);
         }
 
         .task-item .t-check:active {
@@ -543,7 +595,7 @@
             font-family: var(--font-secondary);
             font-size: 12px;
             font-weight: 400;
-            color: var(--black);
+            color: var(--text-primary);
             flex: 1;
             padding: 1px 4px;
             border-radius: 4px;
@@ -627,6 +679,7 @@
             letter-spacing: -1.5px;
             margin-top: 2px;
             transition: transform 0.2s;
+            color: var(--text-primary);
         }
 
         .balance-value:active {
@@ -840,7 +893,7 @@
 
         .card-controls button {
             background: var(--black);
-            color: white;
+            color: var(--white);
             border: none;
             padding: 5px 14px;
             border-radius: 18px;
@@ -858,7 +911,7 @@
 
         .card-controls .add {
             background: var(--gray-light);
-            color: var(--black);
+            color: var(--text-primary);
         }
 
         .actions {
@@ -879,12 +932,17 @@
             align-items: center;
             cursor: pointer;
             transition: all 0.2s;
-            border: 1px solid rgba(0,0,0,0.04);
+            border: 1px solid rgba(128,128,128,0.08);
+            color: var(--text-primary);
         }
 
         .action:active {
             transform: scale(0.94);
             background: #e0e0e0;
+        }
+
+        [data-theme="dark"] .action:active {
+            background: #3a3a3e;
         }
 
         .action-icon {
@@ -896,6 +954,7 @@
             height: 8px;
             background: var(--bg-light);
             margin-top: 14px;
+            transition: background 0.3s ease;
         }
 
         .history {
@@ -912,6 +971,7 @@
         .history-header h2 {
             font-size: 16px;
             font-weight: 700;
+            color: var(--text-primary);
         }
 
         .history-clear {
@@ -943,6 +1003,7 @@
             background: var(--bg-light);
             border-radius: 12px;
             animation: fadeIn 0.3s ease;
+            transition: background 0.3s ease;
         }
 
         @keyframes fadeIn {
@@ -966,7 +1027,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
+            color: var(--white);
             font-size: 14px;
             flex-shrink: 0;
         }
@@ -982,6 +1043,7 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            color: var(--text-primary);
         }
 
         .history-item .h-date {
@@ -1021,6 +1083,7 @@
             font-family: var(--font-primary);
             font-size: 16px;
             font-weight: 700;
+            color: var(--text-primary);
         }
 
         .food-date-nav .fdn-btn {
@@ -1042,7 +1105,7 @@
 
         .food-date-nav .fdn-today {
             background: var(--black);
-            color: white;
+            color: var(--white);
             border: none;
             padding: 4px 14px;
             border-radius: 14px;
@@ -1059,12 +1122,13 @@
         }
 
         .food-summary {
-            background: var(--white);
+            background: var(--card-bg);
             border-radius: 16px;
             padding: 14px 16px;
             margin-bottom: 10px;
-            border: 1px solid var(--bg-light);
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 2px 8px var(--shadow-color);
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .food-summary .fs-header {
@@ -1078,6 +1142,7 @@
             font-family: var(--font-primary);
             font-size: 14px;
             font-weight: 700;
+            color: var(--text-primary);
         }
 
         .food-summary .fs-goal {
@@ -1099,11 +1164,13 @@
             text-align: center;
             outline: none;
             background: var(--bg-light);
+            color: var(--text-primary);
+            transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
         }
 
         .food-summary .fs-goal input:focus {
             border-color: var(--black);
-            background: var(--white);
+            background: var(--card-bg);
         }
 
         .food-progress {
@@ -1113,6 +1180,7 @@
             border-radius: 6px;
             overflow: hidden;
             margin: 4px 0 8px;
+            transition: background 0.3s ease;
         }
 
         .food-progress .fp-fill {
@@ -1139,12 +1207,14 @@
             padding: 3px;
             background: var(--bg-light);
             border-radius: 6px;
+            transition: background 0.3s ease;
         }
 
         .food-stats .stat .stat-value {
             font-family: var(--font-primary);
             font-size: 14px;
             font-weight: 700;
+            color: var(--text-primary);
         }
 
         .food-stats .stat .stat-label {
@@ -1156,14 +1226,15 @@
         }
 
         .food-deficit {
-            background: var(--white);
+            background: var(--card-bg);
             border-radius: 12px;
             padding: 8px 14px;
             margin-bottom: 10px;
-            border: 1px solid var(--bg-light);
+            border: 1px solid var(--card-border);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .food-deficit .fd-label {
@@ -1176,6 +1247,7 @@
             font-family: var(--font-primary);
             font-size: 16px;
             font-weight: 700;
+            color: var(--text-primary);
         }
 
         .food-deficit .fd-value.positive {
@@ -1207,11 +1279,12 @@
         }
 
         .meal-card {
-            background: var(--white);
+            background: var(--card-bg);
             border-radius: 12px;
             padding: 8px 12px;
-            border: 1px solid var(--bg-light);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 1px 4px var(--shadow-color);
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .meal-header {
@@ -1243,7 +1316,7 @@
             font-family: var(--font-primary);
             font-size: 13px;
             font-weight: 700;
-            color: var(--black);
+            color: var(--text-primary);
         }
 
         .meal-calories {
@@ -1254,7 +1327,7 @@
 
         .meal-add-btn {
             background: var(--black);
-            color: white;
+            color: var(--white);
             border: none;
             padding: 2px 12px;
             border-radius: 12px;
@@ -1295,12 +1368,13 @@
             background: var(--bg-light);
             border-radius: 8px;
             font-size: 11px;
+            transition: background 0.3s ease;
         }
 
         .food-item .f-name {
             font-family: var(--font-secondary);
             font-weight: 500;
-            color: var(--black);
+            color: var(--text-primary);
             flex: 1;
         }
 
@@ -1360,11 +1434,12 @@
         .notes-header h2 {
             font-size: 18px;
             font-weight: 700;
+            color: var(--text-primary);
         }
 
         .notes-header .note-add-btn {
             background: var(--black);
-            color: white;
+            color: var(--white);
             border: none;
             padding: 6px 16px;
             border-radius: 16px;
@@ -1393,12 +1468,13 @@
             font-size: 13px;
             outline: none;
             background: var(--bg-light);
+            color: var(--text-primary);
             transition: all 0.2s;
         }
 
         .notes-search input:focus {
             border-color: var(--black);
-            background: var(--white);
+            background: var(--card-bg);
         }
 
         .notes-list {
@@ -1415,11 +1491,11 @@
         }
 
         .note-item {
-            background: var(--white);
+            background: var(--card-bg);
             border-radius: 12px;
             padding: 12px 14px;
-            border: 1px solid var(--bg-light);
-            box-shadow: 0 1px 4px rgba(0,0,0,0.02);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 1px 4px var(--shadow-color);
             cursor: pointer;
             transition: all 0.2s;
         }
@@ -1433,7 +1509,7 @@
             font-family: var(--font-primary);
             font-size: 14px;
             font-weight: 600;
-            color: var(--black);
+            color: var(--text-primary);
             margin-bottom: 2px;
         }
 
@@ -1492,14 +1568,15 @@
         .bottom {
             flex-shrink: 0;
             height: 68px;
-            background: var(--white);
-            border-top: 1px solid #f0f0f2;
+            background: var(--card-bg);
+            border-top: 1px solid var(--tab-border);
             display: flex;
             align-items: center;
             justify-content: space-around;
             padding: 0 10px;
             position: relative;
             z-index: 50;
+            transition: background 0.3s ease, border-color 0.3s ease;
         }
 
         .tab {
@@ -1530,11 +1607,11 @@
         }
 
         .tab.active {
-            color: var(--black);
+            color: var(--text-primary);
         }
 
         .tab.active .tab-icon {
-            color: var(--black);
+            color: var(--text-primary);
         }
 
         .tab .tab-label {
@@ -1564,20 +1641,22 @@
         }
 
         .modal {
-            background: var(--white);
+            background: var(--modal-bg);
             border-radius: 24px;
             padding: 24px 20px;
             width: 100%;
             max-width: 320px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px var(--shadow-color);
             max-height: 90vh;
             overflow-y: auto;
+            transition: background 0.3s ease;
         }
 
         .modal h3 {
             font-size: 18px;
             font-weight: 700;
             margin-bottom: 4px;
+            color: var(--text-primary);
         }
 
         .modal p {
@@ -1593,25 +1672,27 @@
             font-weight: 500;
             display: block;
             margin-bottom: 3px;
+            color: var(--text-secondary);
         }
 
         .modal input, .modal select, .modal textarea {
             width: 100%;
             padding: 10px 12px;
-            border: 2px solid var(--bg-light);
+            border: 2px solid var(--input-border);
             border-radius: 10px;
             font-family: var(--font-secondary);
             font-size: 14px;
             outline: none;
             transition: all 0.2s;
             margin-bottom: 12px;
-            background: var(--bg-light);
+            background: var(--input-bg);
+            color: var(--text-primary);
             -webkit-appearance: none;
         }
 
         .modal input:focus, .modal select:focus, .modal textarea:focus {
             border-color: var(--black);
-            background: var(--white);
+            background: var(--card-bg);
         }
 
         .modal textarea {
@@ -1649,7 +1730,7 @@
 
         .modal .modal-actions .create {
             background: var(--black);
-            color: white;
+            color: var(--white);
         }
 
         .modal .modal-actions .danger {
@@ -1725,19 +1806,21 @@
         }
 
         .alert-box {
-            background: var(--white);
+            background: var(--modal-bg);
             border-radius: 24px;
             padding: 28px 24px;
             width: 100%;
             max-width: 300px;
             text-align: center;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px var(--shadow-color);
+            transition: background 0.3s ease;
         }
 
         .alert-box h3 {
             font-size: 18px;
             font-weight: 700;
             margin-bottom: 8px;
+            color: var(--text-primary);
         }
 
         .alert-box p {
@@ -1776,7 +1859,7 @@
 
         .alert-box .alert-actions .alert-confirm {
             background: var(--black);
-            color: white;
+            color: var(--white);
         }
 
         .alert-box .alert-actions .alert-confirm.danger {
@@ -1807,18 +1890,20 @@
         }
 
         .prompt-box {
-            background: var(--white);
+            background: var(--modal-bg);
             border-radius: 24px;
             padding: 28px 24px;
             width: 100%;
             max-width: 300px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            box-shadow: 0 20px 60px var(--shadow-color);
+            transition: background 0.3s ease;
         }
 
         .prompt-box h3 {
             font-size: 18px;
             font-weight: 700;
             margin-bottom: 4px;
+            color: var(--text-primary);
         }
 
         .prompt-box p {
@@ -1831,19 +1916,20 @@
         .prompt-box input {
             width: 100%;
             padding: 12px 14px;
-            border: 2px solid var(--bg-light);
+            border: 2px solid var(--input-border);
             border-radius: 12px;
             font-family: var(--font-secondary);
             font-size: 15px;
             outline: none;
             transition: all 0.2s;
             margin-bottom: 16px;
-            background: var(--bg-light);
+            background: var(--input-bg);
+            color: var(--text-primary);
         }
 
         .prompt-box input:focus {
             border-color: var(--black);
-            background: var(--white);
+            background: var(--card-bg);
         }
 
         .prompt-box .prompt-actions {
@@ -1874,7 +1960,7 @@
 
         .prompt-box .prompt-actions .prompt-confirm {
             background: var(--black);
-            color: white;
+            color: var(--white);
         }
 
         /* ===== TOAST ===== */
@@ -1884,7 +1970,7 @@
             left: 50%;
             transform: translateX(-50%);
             background: var(--black);
-            color: white;
+            color: var(--white);
             padding: 8px 18px;
             border-radius: 12px;
             font-family: var(--font-secondary);
@@ -1896,11 +1982,144 @@
             pointer-events: none;
             max-width: 80%;
             text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            box-shadow: 0 4px 20px var(--shadow-color);
         }
 
         .toast.show {
             opacity: 1;
+        }
+
+        /* ===== GOALS ===== */
+        .goals-container {
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            transition: all 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            margin-top: 0;
+            visibility: hidden;
+        }
+
+        .goals-container.open {
+            max-height: 400px;
+            opacity: 1;
+            margin-top: 10px;
+            visibility: visible;
+        }
+
+        .goal-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 6px;
+            background: var(--bg-light);
+            border-radius: 8px;
+            margin-bottom: 4px;
+            transition: background 0.3s ease;
+        }
+
+        .goal-item .g-check {
+            width: 20px;
+            height: 20px;
+            border: 2px solid var(--gray-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            font-size: 10px;
+            color: var(--gray-light);
+        }
+
+        .goal-item .g-check.done {
+            background: var(--black);
+            border-color: var(--black);
+            color: var(--white);
+        }
+
+        .goal-item .g-check:active {
+            transform: scale(0.85);
+        }
+
+        .goal-item .g-text {
+            font-family: var(--font-secondary);
+            font-size: 12px;
+            font-weight: 500;
+            color: var(--text-primary);
+            flex: 1;
+            padding: 1px 4px;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+
+        .goal-item .g-text.done {
+            text-decoration: line-through;
+            opacity: 0.5;
+        }
+
+        .goal-item .g-delete {
+            background: none;
+            border: none;
+            color: var(--gray-light);
+            cursor: pointer;
+            font-size: 12px;
+            padding: 1px 4px;
+            transition: all 0.2s;
+            border-radius: 4px;
+            font-family: var(--font-primary);
+        }
+
+        .goal-item .g-delete:active {
+            transform: scale(0.85);
+            background: var(--bg-light);
+        }
+
+        .goal-add-btn {
+            width: 100%;
+            padding: 4px;
+            border: 2px dashed var(--bg-light);
+            border-radius: 6px;
+            background: transparent;
+            font-family: var(--font-secondary);
+            font-size: 11px;
+            color: var(--gray-light);
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-top: 3px;
+        }
+
+        .goal-add-btn:active {
+            transform: scale(0.96);
+            background: var(--bg-light);
+        }
+
+        .goals-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .goals-header .goals-title {
+            font-family: var(--font-primary);
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .goals-header .goals-close {
+            background: none;
+            border: none;
+            color: var(--gray-light);
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0 4px;
+            transition: all 0.2s;
+        }
+
+        .goals-header .goals-close:active {
+            transform: scale(0.85);
         }
 
         @media (max-width: 400px) {
@@ -1920,12 +2139,17 @@
                 padding: 20px;
                 background: #e8e8ea;
             }
+            [data-theme="dark"] body {
+                background: #0a0a0c;
+            }
         }
 
         @media (hover: hover) {
             .action:hover { background: #e0e0e0; }
-            .tab:hover .tab-icon { color: var(--black); }
-            .tab:hover { color: var(--black); }
+            [data-theme="dark"] .action:hover { background: #3a3a3e; }
+            .tab:hover .tab-icon { color: var(--text-primary); }
+            .tab:hover { color: var(--text-primary); }
+            .avatar:hover { opacity: 0.8; }
         }
 
         @supports (padding: max(0px)) {
@@ -1940,9 +2164,12 @@
 
     <!-- TOP -->
     <div class="top">
-        <div class="profile">
-            <div class="avatar">P</div>
-            <div class="name">pushkashu</div>
+        <div class="top-left">
+            <div class="profile">
+                <div class="avatar" id="avatarBtn">P</div>
+                <div class="name">pushkashu</div>
+            </div>
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
         </div>
         <div class="rate hidden" id="rateDisplay" onclick="editRate()">1$ = <span id="rateValue">91.50</span> ₽</div>
     </div>
@@ -1982,6 +2209,16 @@
                                 </div>
                             </div>
                             <div class="stats-hint">Эффективность за все дни</div>
+                        </div>
+
+                        <!-- Цели -->
+                        <div class="goals-container" id="goalsContainer">
+                            <div class="goals-header">
+                                <span class="goals-title">Мои цели</span>
+                                <button class="goals-close" onclick="closeGoals()">✕</button>
+                            </div>
+                            <div id="goalsList"></div>
+                            <button class="goal-add-btn" onclick="addGoal()">+ Добавить цель</button>
                         </div>
                     </div>
                 </div>
@@ -2305,7 +2542,10 @@ let state = {
         snack: false
     },
     cardCurrencies: {},
-    statsExpanded: false
+    statsExpanded: false,
+    goals: [],
+    theme: 'light',
+    totalCurrencyMode: 'RUB'
 };
 
 let currentIndex = 0;
@@ -2398,6 +2638,39 @@ window.confirm = function(msg) {
 };
 
 // ============================================================
+// THEME
+// ============================================================
+function toggleTheme() {
+    const html = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    if (state.theme === 'light') {
+        state.theme = 'dark';
+        html.setAttribute('data-theme', 'dark');
+        btn.innerHTML = '<i class="fas fa-sun"></i>';
+        showToast('Тёмная тема');
+    } else {
+        state.theme = 'light';
+        html.removeAttribute('data-theme');
+        btn.innerHTML = '<i class="fas fa-moon"></i>';
+        showToast('Светлая тема');
+    }
+    saveState();
+    if (navigator.vibrate) navigator.vibrate(10);
+}
+
+function loadTheme() {
+    const html = document.documentElement;
+    const btn = document.getElementById('themeToggle');
+    if (state.theme === 'dark') {
+        html.setAttribute('data-theme', 'dark');
+        btn.innerHTML = '<i class="fas fa-sun"></i>';
+    } else {
+        html.removeAttribute('data-theme');
+        btn.innerHTML = '<i class="fas fa-moon"></i>';
+    }
+}
+
+// ============================================================
 // LOAD / SAVE
 // ============================================================
 function loadState() {
@@ -2428,6 +2701,9 @@ function loadState() {
             if (state.foodDayOffset === undefined) state.foodDayOffset = 0;
             if (!state.cardCurrencies) state.cardCurrencies = {};
             if (state.statsExpanded === undefined) state.statsExpanded = false;
+            if (!state.goals) state.goals = [];
+            if (!state.theme) state.theme = 'light';
+            if (state.totalCurrencyMode === undefined) state.totalCurrencyMode = 'RUB';
         } else {
             state.cards = [{ id: 1, name: 'Business', color: 'black', percent: 100, balance: 0 }];
             state.nextCardId = 2;
@@ -2445,6 +2721,9 @@ function loadState() {
             state.foodDayOffset = 0;
             state.cardCurrencies = {};
             state.statsExpanded = false;
+            state.goals = [];
+            state.theme = 'light';
+            state.totalCurrencyMode = 'RUB';
         }
     } catch (e) {
         state.cards = [{ id: 1, name: 'Business', color: 'black', percent: 100, balance: 0 }];
@@ -2463,6 +2742,9 @@ function loadState() {
         state.foodDayOffset = 0;
         state.cardCurrencies = {};
         state.statsExpanded = false;
+        state.goals = [];
+        state.theme = 'light';
+        state.totalCurrencyMode = 'RUB';
     }
     state.cards.forEach(c => { if (c.balance === undefined) c.balance = 0; });
     saveState();
@@ -2553,15 +2835,6 @@ function getDayScore(dayData) {
     return Math.min(completed, 5) + focusScore;
 }
 
-function hasTask(day, month, year) {
-    const key = getDateKey(day, month, year);
-    const data = state.calendarData[key];
-    if (!data) return false;
-    if (data.tasks && data.tasks.length > 0) return true;
-    if (data.routineDone && data.routineDone.some(r => r)) return true;
-    return false;
-}
-
 function renderCalendar() {
     const year = currentDate.getFullYear();
     const month = currentDate.getMonth();
@@ -2622,13 +2895,11 @@ function renderCalendar() {
         const key = getDateKey(d.day, d.month, d.year);
         const isToday = key === todayKey;
         const isSelected = key === selectedKey;
-        const has = hasTask(d.day, d.month, d.year);
 
         let cls = 'calendar-day';
         if (d.other) cls += ' other';
         if (isToday) cls += ' today';
         if (isSelected && !isToday) cls += ' selected';
-        if (has) cls += ' has-task';
 
         html += `<div class="${cls}" onclick="selectDate(${d.day}, ${d.month}, ${d.year})">${d.day}</div>`;
     });
@@ -2682,7 +2953,6 @@ function setupCalendarDoubleClick() {
     const area = document.getElementById('calendarClickArea');
     
     area.addEventListener('click', function(e) {
-        // Не реагируем на клики по кнопкам навигации
         if (e.target.closest('.calendar-nav')) return;
         
         clickCount++;
@@ -2719,6 +2989,81 @@ function toggleStats() {
     }
     
     saveState();
+}
+
+// ============================================================
+// GOALS
+// ============================================================
+function toggleGoals() {
+    const container = document.getElementById('goalsContainer');
+    const card = document.getElementById('calendarCard');
+    
+    if (container.classList.contains('open')) {
+        container.classList.remove('open');
+        card.classList.remove('expanded');
+        showToast('Цели скрыты');
+    } else {
+        container.classList.add('open');
+        card.classList.add('expanded');
+        renderGoals();
+        showToast('Мои цели');
+    }
+    if (navigator.vibrate) navigator.vibrate(10);
+}
+
+function closeGoals() {
+    const container = document.getElementById('goalsContainer');
+    const card = document.getElementById('calendarCard');
+    container.classList.remove('open');
+    card.classList.remove('expanded');
+    showToast('Цели скрыты');
+}
+
+function renderGoals() {
+    const list = document.getElementById('goalsList');
+    if (state.goals.length === 0) {
+        list.innerHTML = `<div style="text-align:center;padding:8px 0;color:var(--gray-light);font-family:var(--font-secondary);font-size:11px;">Нет целей. Добавьте первую!</div>`;
+        return;
+    }
+    list.innerHTML = state.goals.map((goal, idx) => `
+        <div class="goal-item">
+            <div class="g-check ${goal.done ? 'done' : ''}" onclick="toggleGoal(${idx})">${goal.done ? '✓' : ''}</div>
+            <span class="g-text ${goal.done ? 'done' : ''}">${goal.text}</span>
+            <button class="g-delete" onclick="deleteGoal(${idx})">✕</button>
+        </div>
+    `).join('');
+}
+
+function toggleGoal(idx) {
+    state.goals[idx].done = !state.goals[idx].done;
+    saveState();
+    renderGoals();
+    if (navigator.vibrate) navigator.vibrate(8);
+}
+
+async function deleteGoal(idx) {
+    const goal = state.goals[idx];
+    if (!goal) return;
+    const result = await confirm('Удалить цель "' + goal.text + '"?');
+    if (result) {
+        state.goals.splice(idx, 1);
+        saveState();
+        renderGoals();
+        if (navigator.vibrate) navigator.vibrate(8);
+        showToast('Цель удалена');
+    }
+}
+
+function addGoal() {
+    showPrompt('Новая цель', 'Введите текст цели', '', function(val) {
+        if (val && val.trim() !== '') {
+            state.goals.push({ text: val.trim(), done: false });
+            saveState();
+            renderGoals();
+            showToast('Цель добавлена');
+            if (navigator.vibrate) navigator.vibrate(8);
+        }
+    });
 }
 
 // ============================================================
@@ -2859,13 +3204,18 @@ function addTask() {
         alert('Максимум 7 задач в день');
         return;
     }
-    data.tasks.push({ text: 'Новая задача', done: false });
-    const key = selectedDate.toISOString().split('T')[0];
-    state.calendarData[key] = data;
-    saveState();
-    renderDailyLog(selectedDate);
-    updateStats();
-    if (navigator.vibrate) navigator.vibrate(8);
+    showPrompt('Новая задача', 'Введите текст задачи', '', function(val) {
+        if (val && val.trim() !== '') {
+            data.tasks.push({ text: val.trim(), done: false });
+            const key = selectedDate.toISOString().split('T')[0];
+            state.calendarData[key] = data;
+            saveState();
+            renderDailyLog(selectedDate);
+            updateStats();
+            if (navigator.vibrate) navigator.vibrate(8);
+            showToast('Задача добавлена');
+        }
+    });
 }
 
 // ============================================================
@@ -2965,15 +3315,13 @@ function formatAmount(amount) {
     return (amount || 0).toFixed(2) + ' ₽';
 }
 
-let totalCurrencyMode = 'RUB';
-
 function updateTotalBalance() {
     let total = 0;
     state.cards.forEach(c => {
         total += (c.balance || 0);
     });
     const el = document.getElementById('totalBalance');
-    if (totalCurrencyMode === 'USD') {
+    if (state.totalCurrencyMode === 'USD') {
         el.textContent = '$' + (total / state.rate).toFixed(2);
     } else {
         el.textContent = total.toFixed(2) + ' ₽';
@@ -2981,7 +3329,8 @@ function updateTotalBalance() {
 }
 
 function toggleTotalCurrency() {
-    totalCurrencyMode = totalCurrencyMode === 'RUB' ? 'USD' : 'RUB';
+    state.totalCurrencyMode = state.totalCurrencyMode === 'RUB' ? 'USD' : 'RUB';
+    saveState();
     updateTotalBalance();
     if (navigator.vibrate) navigator.vibrate(10);
 }
@@ -3241,7 +3590,7 @@ function renderFoodSummary(date) {
             </div>
             <div style="display:flex;justify-content:space-between;font-family:var(--font-secondary);font-size:13px;padding:2px 0;">
                 <span style="color:var(--gray);">Калории</span>
-                <span style="font-weight:600;">${Math.round(total.calories)} / ${goal} ккал</span>
+                <span style="font-weight:600;color:var(--text-primary);">${Math.round(total.calories)} / ${goal} ккал</span>
             </div>
             <div style="display:flex;justify-content:space-between;font-family:var(--font-secondary);font-size:13px;padding:2px 0;">
                 <span style="color:var(--gray);">Осталось</span>
@@ -3677,13 +4026,13 @@ function init() {
     document.getElementById('rateValue').textContent = state.rate.toFixed(2);
     document.getElementById('rateDisplay').classList.add('hidden');
 
-    // ===== ТЕКУЩАЯ ДАТА =====
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     
     currentDate = new Date(now.getFullYear(), now.getMonth(), 1);
     selectedDate = today;
 
+    loadTheme();
     renderCards();
     updateDots();
     updateTotalBalance();
@@ -3698,20 +4047,15 @@ function init() {
     setupBalanceClick();
     setupCalendarDoubleClick();
 
-    // Восстанавливаем состояние статистики
+    document.getElementById('avatarBtn').addEventListener('click', toggleGoals);
+
     if (state.statsExpanded) {
         document.getElementById('statsContainer').classList.add('open');
         document.getElementById('calendarCard').classList.add('expanded');
         updateStats();
     }
 
-    console.log('💰 PS - Personal Finance Manager');
-    console.log('📅 Calendar: ' + selectedDate.toLocaleDateString('ru-RU'));
-    console.log('🍽️ Food: FitSpal-style с дефицитом/профицитом');
-    console.log('📝 Notes: как на iPhone');
-    console.log('💳 Карты: 6 цветов, смена валюты по двойному клику');
-    console.log('📊 Статистика: двойной клик по календарю');
-    console.log('✅ Все уведомления — кастомные');
+    console.log('PS - Personal Finance Manager');
 }
 
 document.addEventListener('DOMContentLoaded', init);
