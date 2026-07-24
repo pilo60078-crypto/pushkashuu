@@ -2827,12 +2827,28 @@ function getDateKey(day, month, year) {
     return `${y}-${String(m + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
 }
 
-function getDayScore(dayData) {
-    if (!dayData) return 0;
-    const tasks = dayData.tasks || [];
-    const completed = tasks.filter(t => t.done).length;
-    const focusScore = dayData.focusScore || 0;
-    return Math.min(completed, 5) + focusScore;
+function getDayScore(data) {
+    if (!data) return 0;
+    
+    let score = 0;
+    
+    // Баллы за Routine (максимум 3)
+    if (data.routineDone) {
+        score += data.routineDone.filter(done => done).length;
+    }
+    
+    // Баллы за Daily tasks (максимум 5)
+    if (data.tasks) {
+        const completed = data.tasks.filter(t => t.done).length;
+        score += Math.min(completed, 5);
+    }
+    
+    // Баллы за Focus (0-2)
+    if (data.focusScore !== undefined) {
+        score += data.focusScore;
+    }
+    
+    return Math.min(score, 10);
 }
 
 function renderCalendar() {
@@ -3101,10 +3117,12 @@ function renderDailyLog(date) {
 
     const tasks = data.tasks || [];
     const completed = tasks.filter(t => t.done).length;
-    const score = Math.min(completed, 5) + (data.focusScore || 0);
+    const routineScore = data.routineDone.filter(done => done).length;
+    const focusScore = data.focusScore || 0;
+    const totalScore = Math.min(routineScore, 3) + Math.min(completed, 5) + focusScore;
 
     html += `<div class="log-card daily-tasks"><div class="card-label">Daily tasks</div>`;
-    html += `<div class="tasks-header"><span class="task-label">Задачи</span><span class="task-score">${score}/10</span></div>`;
+    html += `<div class="tasks-header"><span class="task-label">Задачи</span><span class="task-score">${totalScore}/10</span></div>`;
     tasks.forEach((task, idx) => {
         html += `
             <div class="task-item">
