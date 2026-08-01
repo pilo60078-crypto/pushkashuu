@@ -2681,9 +2681,9 @@
             </select>
             <label>Category</label>
             <select id="txCategory">
-                <option value="Trade">Trade</option>
-                <option value="Yandex">Yandex</option>
-                <option value="Other">Other</option>
+                <option value="Trade">Трейдинг</option>
+                <option value="Yandex">Завод</option>
+                <option value="Other">Другое</option>
             </select>
             <div class="modal-actions">
                 <button class="cancel" onclick="closeModal('transactionModal')">Cancel</button>
@@ -3728,8 +3728,8 @@ function renderHistory() {
         const sign = isPos ? '+' : '−';
         const amt = item.currency === 'USD' ? '$' + item.amount.toFixed(2) : item.amount.toFixed(2) + ' ₽';
         let icon = 'fa-circle';
-        if (item.category === 'Trade') icon = 'fa-chart-line';
-        else if (item.category === 'Yandex') icon = 'fa-building';
+        if (item.category === 'Трейдинг') icon = 'fa-chart-line';
+        else if (item.category === 'Завод') icon = 'fa-building';
         else if (item.category === 'Withdraw') icon = 'fa-arrow-right';
         return `
             <div class="history-item">
@@ -3755,7 +3755,7 @@ function openTransactionModal(type) {
     document.getElementById('transactionSub').textContent = type === 'income' ? 'Enter your earnings' : 'Enter your spending';
     document.getElementById('txAmount').value = '';
     document.getElementById('txCurrency').value = 'RUB';
-    document.getElementById('txCategory').value = 'Trade';
+    document.getElementById('txCategory').value = 'Трейдинг';
     document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
     openModal('transactionModal');
 }
