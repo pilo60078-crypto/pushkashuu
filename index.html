@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -131,7 +130,7 @@
         .top-left {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .profile {
@@ -165,6 +164,12 @@
             font-weight: 600;
             letter-spacing: -0.3px;
             color: var(--text-primary);
+        }
+
+        .top-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
         }
 
         .theme-toggle {
@@ -1147,34 +1152,6 @@
             color: var(--text-primary);
         }
 
-        .food-summary .fs-goal {
-            font-family: var(--font-secondary);
-            font-size: 12px;
-            color: var(--gray);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .food-summary .fs-goal input {
-            width: 55px;
-            padding: 2px 6px;
-            border: 1px solid var(--bg-light);
-            border-radius: 6px;
-            font-family: var(--font-secondary);
-            font-size: 12px;
-            text-align: center;
-            outline: none;
-            background: var(--bg-light);
-            color: var(--text-primary);
-            transition: background 0.3s ease, border-color 0.3s ease, color 0.3s ease;
-        }
-
-        .food-summary .fs-goal input:focus {
-            border-color: var(--black);
-            background: var(--card-bg);
-        }
-
         .food-progress {
             width: 100%;
             height: 6px;
@@ -1210,6 +1187,8 @@
             background: var(--bg-light);
             border-radius: 6px;
             transition: background 0.3s ease;
+            cursor: pointer;
+            user-select: none;
         }
 
         .food-stats .stat .stat-value {
@@ -1217,6 +1196,17 @@
             font-size: 14px;
             font-weight: 700;
             color: var(--text-primary);
+            transition: color 0.3s ease;
+        }
+
+        .food-stats .stat .stat-value.green {
+            color: var(--green);
+        }
+        .food-stats .stat .stat-value.orange {
+            color: var(--orange);
+        }
+        .food-stats .stat .stat-value.red {
+            color: var(--red);
         }
 
         .food-stats .stat .stat-label {
@@ -1237,6 +1227,7 @@
             justify-content: space-between;
             align-items: center;
             transition: background 0.3s ease, border-color 0.3s ease;
+            cursor: pointer;
         }
 
         .food-deficit .fd-label {
@@ -2254,7 +2245,7 @@
             flex-wrap: wrap;
         }
 
-        .challenge-panel .cp-btn {
+        .challenge-panel .cp-action-btn {
             padding: 4px 12px;
             border: 2px solid var(--bg-light);
             border-radius: 8px;
@@ -2267,23 +2258,29 @@
             transition: all 0.2s;
         }
 
-        .challenge-panel .cp-btn:active {
+        .challenge-panel .cp-action-btn:active {
             transform: scale(0.92);
         }
 
-        .challenge-panel .cp-btn.active-done {
+        .challenge-panel .cp-action-btn.active {
+            border-color: var(--black);
+            color: var(--text-primary);
+            background: var(--bg-light);
+        }
+
+        .challenge-panel .cp-action-btn.done-active {
             border-color: var(--green);
             color: var(--green);
             background: rgba(45, 122, 58, 0.1);
         }
 
-        .challenge-panel .cp-btn.active-rest {
+        .challenge-panel .cp-action-btn.rest-active {
             border-color: var(--blue);
             color: var(--blue);
             background: rgba(23, 103, 213, 0.1);
         }
 
-        .challenge-panel .cp-btn.active-skip {
+        .challenge-panel .cp-action-btn.skip-active {
             border-color: var(--red);
             color: var(--red);
             background: rgba(179, 58, 58, 0.1);
@@ -2338,20 +2335,6 @@
             margin-bottom: 12px;
         }
 
-        /* Food КБЖУ цвета */
-        .stat-value.green {
-            color: var(--green);
-        }
-        .stat-value.orange {
-            color: var(--orange);
-        }
-        .stat-value.red {
-            color: var(--red);
-        }
-        .stat-value.white {
-            color: var(--text-primary);
-        }
-
         @media (max-width: 400px) {
             .phone {
                 width: 100%;
@@ -2399,9 +2382,11 @@
                 <div class="avatar" id="avatarBtn">P</div>
                 <div class="name">pushkashu</div>
             </div>
-            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
         </div>
-        <div class="rate hidden" id="rateDisplay" onclick="editRate()">1$ = <span id="rateValue">91.50</span> ₽</div>
+        <div class="top-right">
+            <button class="theme-toggle" id="themeToggle" onclick="toggleTheme()"><i class="fas fa-moon"></i></button>
+            <div class="rate hidden" id="rateDisplay" onclick="editRate()">1$ = <span id="rateValue">91.50</span> ₽</div>
+        </div>
     </div>
 
     <!-- SCROLL -->
@@ -2515,11 +2500,11 @@
                     <button class="fdn-today" onclick="goToToday()">Сегодня</button>
                 </div>
                 <div id="foodSummary"></div>
-                <div class="food-deficit" id="foodDeficit">
+                <div class="food-deficit" id="foodDeficit" ondblclick="editBMR()">
                     <span class="fd-label">Баланс калорий</span>
                     <span style="display:flex;align-items:center;gap:6px;">
                         <span class="fd-value" id="deficitValue">0</span>
-                        <button class="fd-edit" onclick="editActivity()">✎</button>
+                        <button class="fd-edit" onclick="event.stopPropagation(); editActivity()">✎</button>
                     </span>
                 </div>
                 <div class="food-meals" id="foodMeals"></div>
@@ -2585,11 +2570,11 @@
     <!-- ALERT -->
     <div class="alert-overlay" id="alertOverlay">
         <div class="alert-box">
-            <h3 id="alertTitle">Confirm</h3>
-            <p id="alertMessage">Are you sure?</p>
+            <h3 id="alertTitle">Подтверждение</h3>
+            <p id="alertMessage">Вы уверены?</p>
             <div class="alert-actions">
-                <button class="alert-cancel" onclick="closeAlert()">Cancel</button>
-                <button class="alert-confirm danger" id="alertConfirmBtn" onclick="closeAlert()">Confirm</button>
+                <button class="alert-cancel" onclick="closeAlert()">Отмена</button>
+                <button class="alert-confirm danger" id="alertConfirmBtn" onclick="confirmAlert()">Да</button>
             </div>
         </div>
     </div>
@@ -2728,8 +2713,8 @@
 
     <div class="modal-overlay" id="activityModal">
         <div class="modal">
-            <h3>Активность</h3>
-            <p>Добавьте активность за день (ккал)</p>
+            <h3>Активность за день</h3>
+            <p>Введите дополнительную активность (ккал)</p>
             <label>Дополнительная активность</label>
             <input type="number" id="activityInput" placeholder="0" step="1" min="0">
             <div class="modal-actions">
@@ -2758,7 +2743,7 @@
     <div class="modal-overlay" id="challengeModal">
         <div class="modal">
             <h3>Новый челлендж</h3>
-            <p>Создайте новую привычку или челлендж</p>
+            <p>Создайте новую привычку</p>
             
             <label>Название</label>
             <input type="text" id="challengeNameInput" placeholder="Например: Бег по утрам" maxlength="30">
@@ -2775,6 +2760,48 @@
             <div class="modal-actions">
                 <button class="cancel" onclick="closeModal('challengeModal')">Отмена</button>
                 <button class="create" onclick="createChallenge()">Создать</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== CHALLENGE ACTION MODAL ===== -->
+    <div class="modal-overlay" id="challengeActionModal">
+        <div class="modal">
+            <h3>Отметить день</h3>
+            <p id="challengeActionName">Выберите действие</p>
+            <div class="modal-actions" style="flex-direction:column;gap:6px;">
+                <button class="create" onclick="setChallengeAction('done')" style="background:var(--green);">Выполнил</button>
+                <button class="create" onclick="setChallengeAction('rest')" style="background:var(--blue);">Отдых</button>
+                <button class="create" onclick="setChallengeAction('skip')" style="background:var(--red);">Пропуск</button>
+                <button class="cancel" onclick="closeModal('challengeActionModal')">Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== FOOD TARGET MODAL ===== -->
+    <div class="modal-overlay" id="foodTargetModal">
+        <div class="modal">
+            <h3 id="foodTargetTitle">Установить цель</h3>
+            <p id="foodTargetSub">Введите целевое значение</p>
+            <label id="foodTargetLabel">Цель</label>
+            <input type="number" id="foodTargetInput" placeholder="0" step="1" min="0">
+            <div class="modal-actions">
+                <button class="cancel" onclick="closeModal('foodTargetModal')">Отмена</button>
+                <button class="create" onclick="saveFoodTarget()">Сохранить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== BMR MODAL ===== -->
+    <div class="modal-overlay" id="bmrModal">
+        <div class="modal">
+            <h3>Базовый расход калорий</h3>
+            <p>Установите базовый обмен веществ (BMR)</p>
+            <label>BMR (ккал)</label>
+            <input type="number" id="bmrInput" placeholder="1700" step="1" min="0">
+            <div class="modal-actions">
+                <button class="cancel" onclick="closeModal('bmrModal')">Отмена</button>
+                <button class="create" onclick="saveBMR()">Сохранить</button>
             </div>
         </div>
     </div>
@@ -2798,7 +2825,8 @@ let state = {
     dailyGoal: 2000,
     notes: [],
     nextNoteId: 1,
-    activity: 0,
+    activityData: {},
+    bmr: 1700,
     foodDayOffset: 0,
     mealCollapsed: {
         breakfast: false,
@@ -2827,6 +2855,8 @@ let selectedDate = new Date();
 let editingNoteId = null;
 let clickCount = 0;
 let clickTimer = null;
+let currentChallengeId = null;
+let foodTargetType = 'calories';
 
 // ============================================================
 // TOAST
@@ -2875,10 +2905,10 @@ document.getElementById('promptInput').addEventListener('keydown', function(e) {
 // ALERT
 // ============================================================
 function showAlert(title, msg, confirmText, callback, isDanger = true) {
-    document.getElementById('alertTitle').textContent = title;
-    document.getElementById('alertMessage').textContent = msg;
+    document.getElementById('alertTitle').textContent = title || 'Подтверждение';
+    document.getElementById('alertMessage').textContent = msg || 'Вы уверены?';
     const btn = document.getElementById('alertConfirmBtn');
-    btn.textContent = confirmText || 'Confirm';
+    btn.textContent = confirmText || 'Да';
     btn.className = 'alert-confirm' + (isDanger ? ' danger' : '');
     alertCallback = callback;
     document.getElementById('alertOverlay').classList.add('show');
@@ -2886,7 +2916,16 @@ function showAlert(title, msg, confirmText, callback, isDanger = true) {
 
 function closeAlert() {
     document.getElementById('alertOverlay').classList.remove('show');
-    if (alertCallback) { alertCallback(); alertCallback = null; }
+    alertCallback = null;
+}
+
+function confirmAlert() {
+    if (alertCallback) { 
+        const cb = alertCallback;
+        alertCallback = null;
+        cb(); 
+    }
+    document.getElementById('alertOverlay').classList.remove('show');
 }
 
 window.alert = function(msg) {
@@ -2957,10 +2996,10 @@ function loadState() {
             if (!state.calendarData) state.calendarData = {};
             if (!state.foodData) state.foodData = {};
             if (!state.foodHistory) state.foodHistory = {};
-            if (state.dailyGoal === undefined) state.dailyGoal = 2000;
             if (!state.notes) state.notes = [];
             if (!state.nextNoteId) state.nextNoteId = 1;
-            if (state.activity === undefined) state.activity = 0;
+            if (!state.activityData) state.activityData = {};
+            if (state.bmr === undefined) state.bmr = 1700;
             if (!state.mealCollapsed) {
                 state.mealCollapsed = { breakfast: false, lunch: false, dinner: false, snack: false };
             }
@@ -2982,10 +3021,10 @@ function loadState() {
             state.calendarData = {};
             state.foodData = {};
             state.foodHistory = {};
-            state.dailyGoal = 2000;
             state.notes = [];
             state.nextNoteId = 1;
-            state.activity = 0;
+            state.activityData = {};
+            state.bmr = 1700;
             state.mealCollapsed = { breakfast: false, lunch: false, dinner: false, snack: false };
             state.foodDayOffset = 0;
             state.cardCurrencies = {};
@@ -3006,10 +3045,10 @@ function loadState() {
         state.calendarData = {};
         state.foodData = {};
         state.foodHistory = {};
-        state.dailyGoal = 2000;
         state.notes = [];
         state.nextNoteId = 1;
-        state.activity = 0;
+        state.activityData = {};
+        state.bmr = 1700;
         state.mealCollapsed = { breakfast: false, lunch: false, dinner: false, snack: false };
         state.foodDayOffset = 0;
         state.cardCurrencies = {};
@@ -3740,7 +3779,10 @@ function submitWithdraw() {
 // DELETE CARD (исправлено с подтверждением)
 // ============================================================
 async function deleteCard(id) {
-    if (state.cards.length <= 1) { alert('Нельзя удалить последнюю карту!'); return; }
+    if (state.cards.length <= 1) { 
+        alert('Нельзя удалить последнюю карту!'); 
+        return; 
+    }
     const card = state.cards.find(c => c.id === id);
     if (!card) return;
     
@@ -3873,9 +3915,6 @@ function createChallenge() {
         return;
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
-    
     state.challenges.push({
         id: state.nextChallengeId++,
         name: name,
@@ -3905,29 +3944,26 @@ function renderChallenges() {
         return;
     }
 
-    const today = new Date();
-    today.setHours(0, 0, 0, 0);
+    container.innerHTML = '';
 
     state.challenges.forEach(challenge => {
         const startDate = new Date(challenge.start);
         const endDate = new Date(challenge.end);
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        
         const diffDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
         
-        // Проверяем каждый день и автоматически отмечаем пропуски после 00:00
         for (let i = 0; i < diffDays; i++) {
             const d = new Date(startDate);
             d.setDate(d.getDate() + i);
             d.setHours(0, 0, 0, 0);
             const key = d.toISOString().split('T')[0];
             
-            // Если день уже прошёл (после 00:00) и не отмечен, отмечаем как пропуск
             if (d < today && !challenge.days[key]) {
                 challenge.days[key] = 'skip';
             }
         }
-        
-        // Если челлендж завершился, показываем статистику
-        const isCompleted = today > endDate;
         
         let doneCount = 0;
         let restCount = 0;
@@ -3939,13 +3975,9 @@ function renderChallenges() {
             else if (challenge.days[key] === 'skip') skipCount++;
         });
         
-        // Проверяем сегодняшний день
-        const todayKey = today.toISOString().split('T')[0];
-        const todayStatus = challenge.days[todayKey] || null;
+        const isCompleted = today > endDate;
         const isActive = today <= endDate && today >= startDate && !isCompleted;
-        
-        const progress = diffDays > 0 ? Math.round((doneCount / challenge.goal) * 100) : 0;
-        const totalDone = doneCount;
+        const progress = challenge.goal > 0 ? Math.round((doneCount / challenge.goal) * 100) : 0;
         
         let statusText = '';
         if (isCompleted) {
@@ -3961,7 +3993,7 @@ function renderChallenges() {
                 <div class="cp-top">
                     <span class="cp-name" ondblclick="editChallengeName(${challenge.id})">${challenge.name}</span>
                     <div class="cp-actions">
-                        <button onclick="deleteChallenge(${challenge.id})" title="Удалить">✕</button>
+                        <button onclick="deleteChallenge(${challenge.id})">✕</button>
                     </div>
                 </div>
                 <div class="cp-middle">
@@ -3969,41 +4001,68 @@ function renderChallenges() {
                     <span class="cp-total">/${challenge.goal} дней</span>
                     <span class="cp-progress">${progress}%</span>
                 </div>
-                ${isCompleted ? `
-                    <div class="cp-stats">
-                        <div class="cs-item">
-                            <div class="cs-number" style="color:var(--green)">${doneCount}</div>
-                            <div class="cs-label">Выполнено</div>
-                        </div>
-                        <div class="cs-item">
-                            <div class="cs-number" style="color:var(--blue)">${restCount}</div>
-                            <div class="cs-label">Отдых</div>
-                        </div>
-                        <div class="cs-item">
-                            <div class="cs-number" style="color:var(--red)">${skipCount}</div>
-                            <div class="cs-label">Пропуски</div>
-                        </div>
-                        <div class="cs-item">
-                            <div class="cs-number">${progress}%</div>
-                            <div class="cs-label">Выполнение</div>
-                        </div>
-                    </div>
-                ` : `
-                    <div class="cp-bottom">
-                        <button class="cp-btn ${todayStatus === 'done' ? 'active-done' : ''}" onclick="markChallengeDay(${challenge.id}, 'done')">✅ Выполнил</button>
-                        <button class="cp-btn ${todayStatus === 'rest' ? 'active-rest' : ''}" onclick="markChallengeDay(${challenge.id}, 'rest')">😴 Отдых</button>
-                        <button class="cp-btn ${todayStatus === 'skip' ? 'active-skip' : ''}" onclick="markChallengeDay(${challenge.id}, 'skip')">❌ Пропуск</button>
-                        <span class="cp-status">${statusText}</span>
-                    </div>
-                `}
-            </div>
         `;
+
+        if (isCompleted) {
+            html += `
+                <div class="cp-stats">
+                    <div class="cs-item">
+                        <div class="cs-number" style="color:var(--green)">${doneCount}</div>
+                        <div class="cs-label">Выполнено</div>
+                    </div>
+                    <div class="cs-item">
+                        <div class="cs-number" style="color:var(--blue)">${restCount}</div>
+                        <div class="cs-label">Отдых</div>
+                    </div>
+                    <div class="cs-item">
+                        <div class="cs-number" style="color:var(--red)">${skipCount}</div>
+                        <div class="cs-label">Пропуски</div>
+                    </div>
+                    <div class="cs-item">
+                        <div class="cs-number">${progress}%</div>
+                        <div class="cs-label">Выполнение</div>
+                    </div>
+                </div>
+            `;
+        } else if (isActive) {
+            const todayKey = today.toISOString().split('T')[0];
+            const todayStatus = challenge.days[todayKey] || null;
+            
+            let btnClass = 'cp-action-btn';
+            if (todayStatus === 'done') btnClass += ' done-active';
+            else if (todayStatus === 'rest') btnClass += ' rest-active';
+            else if (todayStatus === 'skip') btnClass += ' skip-active';
+            
+            html += `
+                <div class="cp-bottom">
+                    <button class="${btnClass}" onclick="openChallengeAction(${challenge.id})">+ Отметить</button>
+                    <span class="cp-status">${statusText}</span>
+                </div>
+            `;
+        } else {
+            html += `
+                <div class="cp-bottom">
+                    <span class="cp-status">${statusText}</span>
+                </div>
+            `;
+        }
+
+        html += `</div>`;
         container.innerHTML += html;
     });
 }
 
-function markChallengeDay(challengeId, status) {
+function openChallengeAction(challengeId) {
+    currentChallengeId = challengeId;
     const challenge = state.challenges.find(c => c.id === challengeId);
+    if (!challenge) return;
+    document.getElementById('challengeActionName').textContent = challenge.name + ' - выберите действие';
+    openModal('challengeActionModal');
+}
+
+function setChallengeAction(action) {
+    if (currentChallengeId === null) return;
+    const challenge = state.challenges.find(c => c.id === currentChallengeId);
     if (!challenge) return;
     
     const today = new Date();
@@ -4013,25 +4072,28 @@ function markChallengeDay(challengeId, status) {
     
     if (today < startDate) {
         alert('Челлендж ещё не начался');
+        closeModal('challengeActionModal');
         return;
     }
     if (today > endDate) {
         alert('Челлендж завершён');
+        closeModal('challengeActionModal');
         return;
     }
     
     const key = today.toISOString().split('T')[0];
     
-    // Если уже есть статус и нажали ту же кнопку - снимаем отметку
-    if (challenge.days[key] === status) {
+    if (challenge.days[key] === action) {
         delete challenge.days[key];
     } else {
-        challenge.days[key] = status;
+        challenge.days[key] = action;
     }
     
     saveState();
     renderChallenges();
+    closeModal('challengeActionModal');
     if (navigator.vibrate) navigator.vibrate(8);
+    showToast('Отмечено');
 }
 
 function editChallengeName(challengeId) {
@@ -4051,14 +4113,43 @@ function editChallengeName(challengeId) {
 async function deleteChallenge(challengeId) {
     const challenge = state.challenges.find(c => c.id === challengeId);
     if (!challenge) return;
-    const result = await confirm('Удалить челлендж "' + challenge.name + '"?');
-    if (result) {
-        state.challenges = state.challenges.filter(c => c.id !== challengeId);
-        saveState();
-        renderChallenges();
-        if (navigator.vibrate) navigator.vibrate(8);
-        showToast('Челлендж удалён');
+    
+    return new Promise((resolve) => {
+        showAlert('Удалить челлендж', 'Вы уверены, что хотите удалить челлендж "' + challenge.name + '"?', 'Да', function() {
+            state.challenges = state.challenges.filter(c => c.id !== challengeId);
+            saveState();
+            renderChallenges();
+            if (navigator.vibrate) navigator.vibrate(8);
+            showToast('Челлендж удалён');
+            resolve(true);
+        }, true);
+        document.querySelector('.alert-cancel').onclick = function() {
+            closeAlert();
+            showToast('Отменено');
+            resolve(false);
+        };
+    });
+}
+
+// ============================================================
+// BMR FUNCTIONS
+// ============================================================
+function editBMR() {
+    document.getElementById('bmrInput').value = state.bmr || 1700;
+    openModal('bmrModal');
+}
+
+function saveBMR() {
+    const val = parseFloat(document.getElementById('bmrInput').value);
+    if (isNaN(val) || val < 0) {
+        alert('Введите корректное значение');
+        return;
     }
+    state.bmr = val;
+    saveState();
+    renderFood();
+    closeModal('bmrModal');
+    showToast('BMR обновлён');
 }
 
 // ============================================================
@@ -4090,7 +4181,7 @@ function renderFood() {
 }
 
 function getColorForValue(value, target) {
-    if (target === 0) return 'white';
+    if (target === 0) return '';
     const percent = (value / target) * 100;
     
     if (percent >= 80 && percent <= 100) return 'green';
@@ -4098,7 +4189,35 @@ function getColorForValue(value, target) {
     if (percent < 50) return 'red';
     if (percent > 100 && percent <= 120) return 'green';
     if (percent > 120) return 'red';
-    return 'white';
+    return '';
+}
+
+function openFoodTarget(type) {
+    foodTargetType = type;
+    const labels = {
+        calories: 'Калории (ккал)',
+        protein: 'Белки (г)',
+        fat: 'Жиры (г)',
+        carbs: 'Углеводы (г)'
+    };
+    document.getElementById('foodTargetTitle').textContent = 'Установить цель для ' + labels[type];
+    document.getElementById('foodTargetSub').textContent = 'Введите целевое значение на день';
+    document.getElementById('foodTargetLabel').textContent = labels[type];
+    document.getElementById('foodTargetInput').value = state.foodTargets[type] || 0;
+    openModal('foodTargetModal');
+}
+
+function saveFoodTarget() {
+    const val = parseFloat(document.getElementById('foodTargetInput').value);
+    if (isNaN(val) || val < 0) {
+        alert('Введите корректное значение');
+        return;
+    }
+    state.foodTargets[foodTargetType] = val;
+    saveState();
+    renderFood();
+    closeModal('foodTargetModal');
+    showToast('Цель обновлена');
 }
 
 function renderFoodSummary(date) {
@@ -4107,12 +4226,11 @@ function renderFoodSummary(date) {
     const dayData = state.foodData[key] || { breakfast: [], lunch: [], dinner: [], snack: [] };
     
     const total = getDayTotals(dayData);
-    const goal = state.dailyGoal || 2000;
+    const goal = state.foodTargets.calories || 2000;
     const remaining = goal - total.calories;
     const percent = Math.min((total.calories / goal) * 100, 100);
     const isOver = total.calories > goal;
 
-    // Цвета для КБЖУ
     const calColor = getColorForValue(total.calories, state.foodTargets.calories || 2000);
     const protColor = getColorForValue(total.protein, state.foodTargets.protein || 150);
     const fatColor = getColorForValue(total.fat, state.foodTargets.fat || 50);
@@ -4122,12 +4240,9 @@ function renderFoodSummary(date) {
         <div class="food-summary">
             <div class="fs-header">
                 <span class="fs-title">Сегодня</span>
-                <div class="fs-goal">
-                    Цель: <input type="number" id="dailyGoalInput" value="${goal}" min="0" onchange="updateGoal(this.value)">
-                </div>
             </div>
             <div class="food-progress">
-                <div class="fp-fill ${isOver ? 'over' : ''}" style="width:${percent}%;"></div>
+                <div class="fp-fill ${isOver ? 'over' : ''}" style="width:${Math.min(percent, 100)}%;"></div>
             </div>
             <div style="display:flex;justify-content:space-between;font-family:var(--font-secondary);font-size:13px;padding:2px 0;">
                 <span style="color:var(--gray);">Калории</span>
@@ -4138,10 +4253,10 @@ function renderFoodSummary(date) {
                 <span style="font-weight:600;color:${remaining >= 0 ? 'var(--green)' : 'var(--red)'};">${remaining >= 0 ? Math.round(remaining) + ' ккал' : Math.round(Math.abs(remaining)) + ' перебор'}</span>
             </div>
             <div class="food-stats">
-                <div class="stat"><div class="stat-value ${calColor}">${Math.round(total.calories)}</div><div class="stat-label">Ккал</div></div>
-                <div class="stat"><div class="stat-value ${protColor}">${total.protein.toFixed(1)}</div><div class="stat-label">Белки</div></div>
-                <div class="stat"><div class="stat-value ${fatColor}">${total.fat.toFixed(1)}</div><div class="stat-label">Жиры</div></div>
-                <div class="stat"><div class="stat-value ${carbColor}">${total.carbs.toFixed(1)}</div><div class="stat-label">Углеводы</div></div>
+                <div class="stat" ondblclick="openFoodTarget('calories')"><div class="stat-value ${calColor}">${Math.round(total.calories)}</div><div class="stat-label">Ккал</div></div>
+                <div class="stat" ondblclick="openFoodTarget('protein')"><div class="stat-value ${protColor}">${total.protein.toFixed(1)}</div><div class="stat-label">Белки</div></div>
+                <div class="stat" ondblclick="openFoodTarget('fat')"><div class="stat-value ${fatColor}">${total.fat.toFixed(1)}</div><div class="stat-label">Жиры</div></div>
+                <div class="stat" ondblclick="openFoodTarget('carbs')"><div class="stat-value ${carbColor}">${total.carbs.toFixed(1)}</div><div class="stat-label">Углеводы</div></div>
             </div>
         </div>
     `;
@@ -4154,8 +4269,8 @@ function renderFoodDeficit(date) {
     const dayData = state.foodData[key] || { breakfast: [], lunch: [], dinner: [], snack: [] };
     const total = getDayTotals(dayData);
     
-    const bmr = 1700;
-    const activity = state.activity || 0;
+    const bmr = state.bmr || 1700;
+    const activity = state.activityData[key] || 0;
     const totalBurn = bmr + activity;
     const balance = totalBurn - total.calories;
     
@@ -4262,23 +4377,22 @@ function goToToday() {
     renderFood();
 }
 
-function updateGoal(value) {
-    const goal = parseFloat(value) || 0;
-    state.dailyGoal = goal;
-    // Обновляем цели КБЖУ
-    state.foodTargets.calories = goal;
-    saveState();
-    renderFood();
-}
-
 function editActivity() {
-    document.getElementById('activityInput').value = state.activity || 0;
+    const date = getFoodDate();
+    const key = date.toISOString().split('T')[0];
+    document.getElementById('activityInput').value = state.activityData[key] || 0;
     openModal('activityModal');
 }
 
 function saveActivity() {
+    const date = getFoodDate();
+    const key = date.toISOString().split('T')[0];
     const val = parseFloat(document.getElementById('activityInput').value) || 0;
-    state.activity = val;
+    if (val > 0) {
+        state.activityData[key] = val;
+    } else {
+        delete state.activityData[key];
+    }
     saveState();
     closeModal('activityModal');
     renderFood();
@@ -4598,9 +4712,6 @@ function init() {
         document.getElementById('calendarCard').classList.add('expanded');
         updateStats();
     }
-
-    console.log('PS - Personal Finance Manager');
-    console.log('🏆 Challenge - до 7 привычек с авто-пропусками');
 }
 
 document.addEventListener('DOMContentLoaded', init);
@@ -4608,4 +4719,3 @@ document.addEventListener('DOMContentLoaded', init);
 
 </body>
 </html>
-```
